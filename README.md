@@ -1,4 +1,4 @@
-Role Name
+wazuh_agent
 =========
 
 Ansible role to install and configure wazuh agent
