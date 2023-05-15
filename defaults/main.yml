@@ -1,0 +1,5 @@
+---
+wazuh_manager_ip: localhost
+wazuh_manager_password: registration_password
+wazuh_agent_group: linux # make sure the group exists in the manager
+enable_wazuh_remote_command: False
