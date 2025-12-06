@@ -14,6 +14,15 @@ Role Variables
 - enable_wazuh_remote_command: True/False
 ```
 
+Tags
+--------------
+```text
+- update_wazuh_agent
+- yara
+- module
+- reload
+- docker 
+```
 
 Example Playbook
 ----------------
