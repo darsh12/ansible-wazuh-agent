@@ -1,2 +1,4 @@
 ---
 # vars file for wazuh_agent
+venv_path: /root/.wazuh-venv
+venv_bin: "{{ venv_path }}/bin/python"

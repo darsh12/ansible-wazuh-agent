@@ -5,6 +5,35 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Example assertion
+    - name: Check if ossec file exists
+      ansible.builtin.stat:
+        path: /var/ossec/etc/ossec.conf
+      register: ossec_conf
+
+    - name: Check if yara.sh exists
+      ansible.builtin.stat:
+        path: /var/ossec/active-response/bin/yara.sh
+      register: yara_sh
+
+    - name: Check if /root/.wazuh-venv exists
+      ansible.builtin.stat:
+        path: /root/.wazuh-venv/bin/python
+      register: venv
+
+    - name: Check if DockerListener exists
+      ansible.builtin.stat:
+        path: /var/ossec/wodles/docker/DockerListener
+      register: docker_listener
+
+    - name: Get DockerListener shebang
+      ansible.builtin.shell: head -n 1 /var/ossec/wodles/docker/DockerListener
+      register: docker_listener_shebang
+      when: docker_listener.stat.exists
+      changed_when: false
+
+    - name: Assert that ossec file exists and DockerListener has correct shebang
       ansible.builtin.assert:
-        that: true
+        that:
+          - ossec_conf.stat.exists and yara_sh.stat.exists and venv.stat.exists
+          - docker_listener.stat.exists
+          - "docker_listener_shebang.stdout == '#!/root/.wazuh-venv/bin/python'"

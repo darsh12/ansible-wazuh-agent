@@ -1,2 +1,7 @@
 ---
 # handlers file for wazuh_agent
+- name: reload wazuh_agent
+  service:
+    name: wazuh_agent
+    state: restarted
+  become: yes

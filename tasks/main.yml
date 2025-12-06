@@ -52,6 +52,38 @@
     group: wazuh
     mode: '0750'
   become: yes
+  tags:
+    - yara
+    - module
+    - reload
+
+- name: Install virtual environment and docker dependencies
+  block:
+    - name: install python3-venv
+      ansible.builtin.apt:
+        name: python3-venv
+        state: present
+        update_cache: yes
+
+    - name: create virtualenv for docker
+      ansible.builtin.pip:
+        name: [ "docker", "urllib3", "requests" ]
+        virtualenv: "{{ venv_path }}"
+        virtualenv_command: "python3 -m venv"
+
+    - name: update the virtualenv of /var/ossec/wodles/docker/DockerListener
+      ansible.builtin.replace:
+        path: /var/ossec/wodles/docker/DockerListener
+        regexp: '^#!.*$'
+        replace: "#!{{ venv_bin }}"
+
+  become: yes
+  tags:
+    - docker
+    - module
+    - reload
+
+
 
 - name: register agent
   ansible.builtin.command: /var/ossec/bin/agent-auth -m "{{ wazuh_manager_ip }}" -P "{{ wazuh_manager_password }}" -G "{{ wazuh_agent_group }}"
@@ -59,13 +91,11 @@
   become: yes
 
 - name: reload agent
-  service:
-    daemon_reload: yes
-    name: wazuh-agent
-    enabled: yes
-    state: reloaded
-  become: yes
-  tags: update_wazuh_agent
+  ansible.builtin.meta: noop
+  notify: reload wazuh_agent
+  tags:
+   - update_wazuh_agent
+   - reload
 
 - name: remove wazuh repository
   ansible.builtin.apt_repository:
@@ -73,4 +103,6 @@
     state: absent
     filename: wazuh
   become: yes
-  tags: disable_wazuh, update_wazuh_agent
+  tags:
+    - disable_wazuh
+    - update_wazuh_agent

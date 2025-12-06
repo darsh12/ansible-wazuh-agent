@@ -1,11 +1,11 @@
 galaxy_info:
   author: darsh12
-  namespace: darsh12
+  role_name: wazuh_agent
   description: Ansible role to install and configure wazuh agent
 
   license: BSD
 
-  min_ansible_version: 2.10
+  min_ansible_version: "2.10"
 
   platforms:
   - name: Ubuntu

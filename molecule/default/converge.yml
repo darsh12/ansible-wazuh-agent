@@ -3,5 +3,9 @@
   hosts: all
   tasks:
     - name: "Include darsh12.wazuh_agent"
-      include_role:
-        name: "darsh12.wazuh_agent"
+      block:
+        - name: "Include wazuh_agent"
+          include_role:
+            name: "darsh12.wazuh_agent"
+      tags: docker
+      ignore_errors: true
