@@ -91,7 +91,7 @@
   become: yes
 
 - name: reload agent
-  ansible.builtin.meta: noop
+  ansible.builtin.command: id
   notify: reload wazuh_agent
   tags:
    - update_wazuh_agent
